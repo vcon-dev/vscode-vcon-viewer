@@ -1,0 +1,24 @@
+/* VSCode Theme Variables */
+:root {
+    --vscode-foreground: #cccccc;
+    --vscode-background: #1e1e1e;
+    --vscode-editor-background: #1e1e1e;
+    --vscode-panel-background: #252526;
+    --vscode-panel-border: #3c3c3c;
+    --vscode-list-hoverBackground: #2a2d2e;
+    --vscode-input-background: #3c3c3c;
+    --vscode-input-border: #3c3c3c;
+    --vscode-button-background: #0e639c;
+    --vscode-button-foreground: #ffffff;
+    --vscode-button-hoverBackground: #1177bb;
+    --vscode-button-secondaryBackground: #3a3d41;
+    --vscode-button-secondaryForeground: #cccccc;
+    --vscode-button-secondaryHoverBackground: #45494e;
+    --vscode-badge-background: #4a9eff;
+    --vscode-badge-foreground: #ffffff;
+    --vscode-descriptionForeground: #cccccc80;
+    --vscode-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+    --vscode-font-size: 13px;
+    --vscode-editor-font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+}
+

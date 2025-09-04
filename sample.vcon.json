@@ -1,0 +1,165 @@
+{
+    "vcon": "1.0",
+    "uuid": "550e8400-e29b-41d4-a716-446655440000",
+    "created": "2023-01-15T10:30:00Z",
+    "updated": "2023-01-15T11:45:00Z",
+    "subject": "Customer Support Call - Account Billing Issue",
+    "redacted": [
+        "parties.0.tel",
+        "parties.1.tel"
+    ],
+    "parties": [
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440001",
+            "name": "John Smith",
+            "tel": "+1234567890",
+            "email": "john.smith@example.com"
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440002",
+            "name": "Sarah Johnson",
+            "tel": "+0987654321",
+            "email": "sarah.johnson@support.com"
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440003",
+            "name": "Mike Wilson",
+            "tel": "+1122334455",
+            "email": "mike.wilson@example.com"
+        }
+    ],
+    "dialog": [
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440004",
+            "type": "audio",
+            "start": "2023-01-15T10:30:00Z",
+            "end": "2023-01-15T10:35:00Z",
+            "duration": 300,
+            "parties": [
+                0,
+                1
+            ],
+            "mimetype": "audio/wav",
+            "body": "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT..."
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440005",
+            "type": "text",
+            "start": "2023-01-15T10:35:00Z",
+            "end": "2023-01-15T10:40:00Z",
+            "duration": 300,
+            "parties": [
+                0,
+                1
+            ],
+            "mimetype": "text/plain",
+            "body": "Customer: Hi, I'm calling about my recent bill. I think there's an error.\nAgent: Hello! I'd be happy to help you with your billing question. Can you provide your account number?\nCustomer: Sure, it's 123456789.\nAgent: Thank you. I can see your account. What specific issue are you seeing with the bill?\nCustomer: I was charged $50 for a service I never used."
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440006",
+            "type": "video",
+            "start": "2023-01-15T10:40:00Z",
+            "end": "2023-01-15T10:45:00Z",
+            "duration": 300,
+            "parties": [
+                0,
+                1
+            ],
+            "mimetype": "video/mp4",
+            "url": "https://example.com/video/meeting-recording.mp4"
+        }
+    ],
+    "attachments": [
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440007",
+            "type": "document",
+            "filename": "billing-statement.pdf",
+            "mimetype": "application/pdf",
+            "size": 245760,
+            "body": "data:application/pdf;base64,JVBERi0xLjQKJcOkw7zDtsO..."
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440008",
+            "type": "image",
+            "filename": "screenshot.png",
+            "mimetype": "image/png",
+            "size": 15360,
+            "url": "https://example.com/images/screenshot.png"
+        }
+    ],
+    "analysis": [
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440009",
+            "type": "transcript",
+            "mimetype": "text/plain",
+            "body": "Customer: Hi, I'm calling about my recent bill. I think there's an error.\nAgent: Hello! I'd be happy to help you with your billing question. Can you provide your account number?\nCustomer: Sure, it's 123456789.\nAgent: Thank you. I can see your account. What specific issue are you seeing with the bill?\nCustomer: I was charged $50 for a service I never used.\nAgent: I understand your concern. Let me look into this charge for you.\nCustomer: Thank you, I appreciate it.\nAgent: I can see the charge was for premium support that was added to your account on January 10th.\nCustomer: I never requested that service.\nAgent: You're absolutely right. I can see this was added without authorization. I'll remove this charge and credit your account.\nCustomer: That's great, thank you so much!\nAgent: You're welcome! The credit should appear on your next statement. Is there anything else I can help you with today?\nCustomer: No, that's all I needed. Thank you for your help.\nAgent: You're welcome! Have a great day.\nCustomer: You too, goodbye."
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440010",
+            "type": "sentiment",
+            "mimetype": "application/json",
+            "body": "{\"overall_sentiment\": \"positive\", \"customer_sentiment\": \"frustrated_to_satisfied\", \"agent_sentiment\": \"helpful\", \"resolution\": \"successful\"}"
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440011",
+            "type": "intent",
+            "mimetype": "application/json",
+            "body": "{\"primary_intent\": \"billing_dispute\", \"secondary_intent\": \"refund_request\", \"resolution_intent\": \"credit_account\"}"
+        }
+    ],
+    "jumps": [
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440012",
+            "sequence": 1,
+            "start": "2023-01-15T10:30:00Z",
+            "end": "2023-01-15T10:35:00Z",
+            "duration": 300
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440013",
+            "sequence": 2,
+            "start": "2023-01-15T10:35:00Z",
+            "end": "2023-01-15T10:40:00Z",
+            "duration": 300
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440014",
+            "sequence": 3,
+            "start": "2023-01-15T10:40:00Z",
+            "end": "2023-01-15T10:45:00Z",
+            "duration": 300
+        }
+    ],
+    "group": [
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440015",
+            "name": "Customer Support Team",
+            "parties": [
+                1
+            ]
+        },
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440016",
+            "name": "Billing Department",
+            "parties": [
+                1
+            ]
+        }
+    ],
+    "signing": [
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440017",
+            "type": "digital_signature",
+            "mimetype": "application/pgp-signature",
+            "body": "-----BEGIN PGP SIGNATURE-----\nVersion: GnuPG v2.0.22 (GNU/Linux)\n\niQEcBAEBAgAGBQJX8K8QAAoJEFIDXgJ8L5QJ..."
+        }
+    ],
+    "encryption": [
+        {
+            "uuid": "550e8400-e29b-41d4-a716-446655440018",
+            "type": "AES-256",
+            "mimetype": "application/octet-stream",
+            "body": "encrypted_data_here"
+        }
+    ]
+}
