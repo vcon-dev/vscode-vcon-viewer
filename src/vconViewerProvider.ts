@@ -211,6 +211,22 @@ export class VConViewerProvider implements vscode.WebviewViewProvider {
                         color: var(--vscode-descriptionForeground);
                         padding: 40px;
                     }
+                    .badge {
+                        display: inline-block;
+                        padding: 2px 8px;
+                        border-radius: 12px;
+                        font-size: 11px;
+                        font-weight: bold;
+                        margin-left: 6px;
+                    }
+                    .badge-critical {
+                        background: var(--vscode-editorError-foreground);
+                        color: #fff;
+                    }
+                    .provenance {
+                        font-size: 12px;
+                        color: var(--vscode-descriptionForeground);
+                    }
                 </style>
             </head>
             <body>
@@ -320,6 +336,8 @@ export class VConViewerProvider implements vscode.WebviewViewProvider {
         text += `Created: ${vcon.created}\n`;
         if (vcon.updated) text += `Updated: ${vcon.updated}\n`;
         if (vcon.subject) text += `Subject: ${vcon.subject}\n`;
+        if (vcon.redacted?.length) text += `Redacted: ${vcon.redacted.join(', ')}\n`;
+        if (vcon.amended?.length) text += `Amended: ${vcon.amended.join(', ')}\n`;
         text += '\n';
 
         if (vcon.parties && vcon.parties.length > 0) {

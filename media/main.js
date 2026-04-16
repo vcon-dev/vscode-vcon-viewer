@@ -6,7 +6,7 @@ let currentVCon = null;
 // Listen for messages from the extension
 window.addEventListener('message', event => {
     const message = event.data;
-    
+
     switch (message.type) {
         case 'loadVCon':
             currentVCon = message.data;
@@ -16,54 +16,36 @@ window.addEventListener('message', event => {
 });
 
 function renderVCon(vcon, fileName) {
-    // Hide no-data message and show content
     document.getElementById('no-data').style.display = 'none';
     document.getElementById('vcon-content').style.display = 'block';
-    
-    // Update header
     document.querySelector('.header h1').textContent = `vCon Viewer - ${fileName.split('/').pop()}`;
-    
-    // Render metadata
+
     renderMetadata(vcon);
-    
-    // Render parties
     renderParties(vcon.parties || []);
-    
-    // Render dialog
     renderDialog(vcon.dialog || []);
-    
-    // Render attachments
     renderAttachments(vcon.attachments || []);
-    
-    // Render analysis
     renderAnalysis(vcon.analysis || []);
-    
-    // Render jumps
     renderJumps(vcon.jumps || []);
-    
-    // Render groups
     renderGroups(vcon.groups || []);
-    
-    // Render signing
     renderSigning(vcon.signing || []);
-    
-    // Render encryption
     renderEncryption(vcon.encryption || []);
 }
 
 function renderMetadata(vcon) {
     const metadataContainer = document.getElementById('metadata');
     metadataContainer.innerHTML = '';
-    
+
     const metadata = [
         { label: 'vCon Version', value: vcon.vcon },
         { label: 'UUID', value: vcon.uuid },
         { label: 'Created', value: formatDate(vcon.created) },
         { label: 'Updated', value: vcon.updated ? formatDate(vcon.updated) : 'Not specified' },
         { label: 'Subject', value: vcon.subject || 'Not specified' },
-        { label: 'Redacted Fields', value: vcon.redacted ? vcon.redacted.join(', ') : 'None' }
+        { label: 'Redacted', value: vcon.redacted ? vcon.redacted.join(', ') : 'None' },
+        // 0.4.0: amended (replaced appended)
+        { label: 'Amended', value: vcon.amended ? vcon.amended.join(', ') : 'None' }
     ];
-    
+
     metadata.forEach(item => {
         const div = document.createElement('div');
         div.className = 'metadata-item';
@@ -78,12 +60,12 @@ function renderMetadata(vcon) {
 function renderParties(parties) {
     const container = document.getElementById('parties');
     container.innerHTML = '';
-    
+
     if (parties.length === 0) {
         container.innerHTML = '<div class="no-data">No parties defined</div>';
         return;
     }
-    
+
     parties.forEach((party, index) => {
         const div = document.createElement('div');
         div.className = 'party-card';
@@ -100,16 +82,16 @@ function renderParties(parties) {
 function renderDialog(dialogs) {
     const container = document.getElementById('dialog');
     container.innerHTML = '';
-    
+
     if (dialogs.length === 0) {
         container.innerHTML = '<div class="no-data">No dialog entries</div>';
         return;
     }
-    
+
     dialogs.forEach((dialog, index) => {
         const div = document.createElement('div');
         div.className = 'dialog-item';
-        
+
         let bodyContent = '';
         if (dialog.body) {
             if (dialog.mimetype && dialog.mimetype.includes('audio')) {
@@ -118,16 +100,36 @@ function renderDialog(dialogs) {
                 bodyContent = `<div class="dialog-body">${escapeHtml(dialog.body)}</div>`;
             }
         }
-        
+
+        // 0.4.0: critical flag (was must_support)
+        const criticalBadge = dialog.critical
+            ? `<span class="badge badge-critical" title="Critical — must be understood by consumers">CRITICAL</span>`
+            : '';
+
+        // 0.4.0: session_id
+        const sessionId = dialog.session_id
+            ? `<p><strong>Session:</strong> local=${dialog.session_id.local} remote=${dialog.session_id.remote}</p>`
+            : '';
+
+        // encoding
+        const encoding = dialog.encoding
+            ? `<p><strong>Encoding:</strong> ${dialog.encoding}</p>`
+            : '';
+
         div.innerHTML = `
             <div class="dialog-header">
-                <span class="dialog-type">${dialog.type}</span>
+                <div>
+                    <span class="dialog-type">${dialog.type}</span>
+                    ${criticalBadge}
+                </div>
                 <span>${dialog.start ? formatDate(dialog.start) : 'No start time'}</span>
             </div>
             <p><strong>UUID:</strong> ${dialog.uuid}</p>
             ${dialog.end ? `<p><strong>End:</strong> ${formatDate(dialog.end)}</p>` : ''}
             ${dialog.duration ? `<p><strong>Duration:</strong> ${dialog.duration}s</p>` : ''}
             ${dialog.parties ? `<p><strong>Parties:</strong> ${dialog.parties.join(', ')}</p>` : ''}
+            ${sessionId}
+            ${encoding}
             ${bodyContent}
         `;
         container.appendChild(div);
@@ -137,12 +139,12 @@ function renderDialog(dialogs) {
 function renderAttachments(attachments) {
     const container = document.getElementById('attachments');
     container.innerHTML = '';
-    
+
     if (attachments.length === 0) {
         container.innerHTML = '<div class="no-data">No attachments</div>';
         return;
     }
-    
+
     attachments.forEach(attachment => {
         const div = document.createElement('div');
         div.className = 'attachment-item';
@@ -150,7 +152,9 @@ function renderAttachments(attachments) {
             <div>
                 <strong>${attachment.filename || attachment.uuid}</strong>
                 <br>
-                <small>${attachment.type} - ${attachment.mimetype || 'Unknown type'}</small>
+                <!-- 0.4.0: purpose (renamed from type) -->
+                <small>${attachment.purpose} - ${attachment.mimetype || 'Unknown type'}</small>
+                ${attachment.encoding ? `<br><small>Encoding: ${attachment.encoding}</small>` : ''}
                 ${attachment.size ? `<br><small>Size: ${formatBytes(attachment.size)}</small>` : ''}
             </div>
             <button class="btn" onclick="downloadAttachment('${attachment.uuid}')">Download</button>
@@ -162,18 +166,23 @@ function renderAttachments(attachments) {
 function renderAnalysis(analyses) {
     const container = document.getElementById('analysis');
     container.innerHTML = '';
-    
+
     if (analyses.length === 0) {
         container.innerHTML = '<div class="no-data">No analysis data</div>';
         return;
     }
-    
+
     analyses.forEach(analysis => {
         const div = document.createElement('div');
         div.className = 'dialog-item';
+
+        // 0.4.0: vendor/product
+        const provenance = [analysis.vendor, analysis.product].filter(Boolean).join(' / ');
+
         div.innerHTML = `
             <div class="dialog-header">
                 <span class="dialog-type">${analysis.type}</span>
+                ${provenance ? `<span class="provenance">${escapeHtml(provenance)}</span>` : ''}
             </div>
             <p><strong>UUID:</strong> ${analysis.uuid}</p>
             ${analysis.body ? `<div class="dialog-body">${escapeHtml(analysis.body)}</div>` : ''}
@@ -185,12 +194,12 @@ function renderAnalysis(analyses) {
 function renderJumps(jumps) {
     const container = document.getElementById('jumps');
     container.innerHTML = '';
-    
+
     if (jumps.length === 0) {
         container.innerHTML = '<div class="no-data">No jumps defined</div>';
         return;
     }
-    
+
     jumps.forEach(jump => {
         const div = document.createElement('div');
         div.className = 'party-card';
@@ -208,12 +217,12 @@ function renderJumps(jumps) {
 function renderGroups(groups) {
     const container = document.getElementById('groups');
     container.innerHTML = '';
-    
+
     if (groups.length === 0) {
         container.innerHTML = '<div class="no-data">No groups defined</div>';
         return;
     }
-    
+
     groups.forEach(group => {
         const div = document.createElement('div');
         div.className = 'party-card';
@@ -229,12 +238,12 @@ function renderGroups(groups) {
 function renderSigning(signing) {
     const container = document.getElementById('signing');
     container.innerHTML = '';
-    
+
     if (signing.length === 0) {
         container.innerHTML = '<div class="no-data">No signing data</div>';
         return;
     }
-    
+
     signing.forEach(sign => {
         const div = document.createElement('div');
         div.className = 'party-card';
@@ -250,12 +259,12 @@ function renderSigning(signing) {
 function renderEncryption(encryption) {
     const container = document.getElementById('encryption');
     container.innerHTML = '';
-    
+
     if (encryption.length === 0) {
         container.innerHTML = '<div class="no-data">No encryption data</div>';
         return;
     }
-    
+
     encryption.forEach(enc => {
         const div = document.createElement('div');
         div.className = 'party-card';
@@ -278,7 +287,7 @@ function formatDate(dateString) {
 }
 
 function formatBytes(bytes) {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) { return '0 Bytes'; }
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -291,21 +300,13 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Event handlers
 function exportVCon(format) {
-    vscode.postMessage({
-        type: 'exportVCon',
-        format: format
-    });
+    vscode.postMessage({ type: 'exportVCon', format: format });
 }
 
 function downloadAttachment(uuid) {
     const attachment = currentVCon.attachments.find(a => a.uuid === uuid);
     if (attachment) {
-        vscode.postMessage({
-            type: 'downloadAttachment',
-            attachment: attachment
-        });
+        vscode.postMessage({ type: 'downloadAttachment', attachment: attachment });
     }
 }
-

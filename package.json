@@ -1,8 +1,8 @@
 {
     "name": "vcon-viewer",
     "displayName": "vCon Viewer",
-    "description": "View and interact with IETF vCon files in VSCode - A comprehensive viewer for voice conversation data with rich visualization, validation, and export capabilities",
-    "version": "0.1.0",
+    "description": "View and interact with IETF vCon files in VSCode - vCon 0.4.0 spec compliant",
+    "version": "0.2.0",
     "engines": {
         "vscode": "^1.74.0"
     },

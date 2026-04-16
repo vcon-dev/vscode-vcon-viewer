@@ -1,5 +1,10 @@
 import Ajv from 'ajv';
 
+// vCon 0.4.0 spec — https://datatracker.ietf.org/doc/draft-ietf-vcon-vcon-core/
+export const VCON_VERSION = '0.4.0';
+export const VALID_ENCODINGS = ['base64url', 'json', 'none'] as const;
+export type VConEncoding = typeof VALID_ENCODINGS[number];
+
 export interface VConData {
     vcon: string;
     uuid: string;
@@ -7,6 +12,7 @@ export interface VConData {
     updated?: string;
     subject?: string;
     redacted?: string[];
+    amended?: string[];          // 0.4.0: replaced "appended"
     parties?: VConParty[];
     dialog?: VConDialog[];
     attachments?: VConAttachment[];
@@ -26,6 +32,11 @@ export interface VConParty {
     [key: string]: any;
 }
 
+export interface VConSessionId {
+    local: string;   // 0.4.0
+    remote: string;  // 0.4.0
+}
+
 export interface VConDialog {
     uuid: string;
     type: string;
@@ -33,21 +44,27 @@ export interface VConDialog {
     end?: string;
     parties?: number[];
     mimetype?: string;
+    encoding?: VConEncoding;     // 0.4.0: base64url | json | none
     body?: string;
     url?: string;
     duration?: number;
+    critical?: boolean;          // 0.4.0: replaced "must_support"
+    session_id?: VConSessionId;  // 0.4.0
+    content_hash?: string | string[];  // 0.4.0
     meta?: any;
     [key: string]: any;
 }
 
 export interface VConAttachment {
     uuid: string;
-    type: string;
+    purpose: string;             // 0.4.0: renamed from "type"
+    encoding?: VConEncoding;     // 0.4.0: base64url | json | none
     filename?: string;
     mimetype?: string;
     body?: string;
     url?: string;
     size?: number;
+    content_hash?: string | string[];  // 0.4.0
     meta?: any;
     [key: string]: any;
 }
@@ -55,9 +72,13 @@ export interface VConAttachment {
 export interface VConAnalysis {
     uuid: string;
     type: string;
+    vendor?: string;             // 0.4.0
+    product?: string;            // 0.4.0
+    encoding?: VConEncoding;     // 0.4.0
     body?: string;
     url?: string;
     mimetype?: string;
+    content_hash?: string | string[];  // 0.4.0
     meta?: any;
     [key: string]: any;
 }
@@ -110,129 +131,151 @@ export class VConValidator {
     }
 
     private initializeSchema() {
-        // Basic vCon schema based on IETF draft
+        // vCon schema — vCon 0.4.0 spec
+        const encodingEnum = { type: 'string', enum: VALID_ENCODINGS };
+        const contentHash = { oneOf: [{ type: 'string' }, { type: 'array', items: { type: 'string' } }] };
+
         this.vconSchema = {
-            type: "object",
-            required: ["vcon", "uuid", "created"],
+            type: 'object',
+            required: ['vcon', 'uuid', 'created'],
             properties: {
-                vcon: { type: "string", pattern: "^[0-9]+\\.[0-9]+$" },
-                uuid: { type: "string", format: "uuid" },
-                created: { type: "string", format: "date-time" },
-                updated: { type: "string", format: "date-time" },
-                subject: { type: "string" },
-                redacted: { type: "array", items: { type: "string" } },
+                // Accept both X.Y and X.Y.Z version strings
+                vcon: { type: 'string', pattern: '^[0-9]+\\.[0-9]+(\\.[0-9]+)?$' },
+                uuid: { type: 'string', format: 'uuid' },
+                created: { type: 'string', format: 'date-time' },
+                updated: { type: 'string', format: 'date-time' },
+                subject: { type: 'string' },
+                redacted: { type: 'array', items: { type: 'string' } },
+                amended: { type: 'array', items: { type: 'string' } },  // 0.4.0
                 parties: {
-                    type: "array",
+                    type: 'array',
                     items: {
-                        type: "object",
-                        required: ["uuid"],
+                        type: 'object',
+                        required: ['uuid'],
                         properties: {
-                            uuid: { type: "string", format: "uuid" },
-                            name: { type: "string" },
-                            tel: { type: "string" },
-                            email: { type: "string", format: "email" }
+                            uuid: { type: 'string', format: 'uuid' },
+                            name: { type: 'string' },
+                            tel: { type: 'string' },
+                            email: { type: 'string', format: 'email' }
                         }
                     }
                 },
                 dialog: {
-                    type: "array",
+                    type: 'array',
                     items: {
-                        type: "object",
-                        required: ["uuid", "type"],
+                        type: 'object',
+                        required: ['uuid', 'type'],
                         properties: {
-                            uuid: { type: "string", format: "uuid" },
-                            type: { type: "string" },
-                            start: { type: "string", format: "date-time" },
-                            end: { type: "string", format: "date-time" },
-                            parties: { type: "array", items: { type: "number" } },
-                            mimetype: { type: "string" },
-                            body: { type: "string" },
-                            url: { type: "string", format: "uri" },
-                            duration: { type: "number" }
+                            uuid: { type: 'string', format: 'uuid' },
+                            type: { type: 'string' },
+                            start: { type: 'string', format: 'date-time' },
+                            end: { type: 'string', format: 'date-time' },
+                            parties: { type: 'array', items: { type: 'number' } },
+                            mimetype: { type: 'string' },
+                            encoding: encodingEnum,          // 0.4.0
+                            body: { type: 'string' },
+                            url: { type: 'string', format: 'uri' },
+                            duration: { type: 'number' },
+                            critical: { type: 'boolean' },  // 0.4.0: was must_support
+                            session_id: {                   // 0.4.0
+                                type: 'object',
+                                required: ['local', 'remote'],
+                                properties: {
+                                    local: { type: 'string' },
+                                    remote: { type: 'string' }
+                                }
+                            },
+                            content_hash: contentHash       // 0.4.0
                         }
                     }
                 },
                 attachments: {
-                    type: "array",
+                    type: 'array',
                     items: {
-                        type: "object",
-                        required: ["uuid", "type"],
+                        type: 'object',
+                        required: ['uuid', 'purpose'],      // 0.4.0: was ["uuid", "type"]
                         properties: {
-                            uuid: { type: "string", format: "uuid" },
-                            type: { type: "string" },
-                            filename: { type: "string" },
-                            mimetype: { type: "string" },
-                            body: { type: "string" },
-                            url: { type: "string", format: "uri" },
-                            size: { type: "number" }
+                            uuid: { type: 'string', format: 'uuid' },
+                            purpose: { type: 'string' },   // 0.4.0: renamed from "type"
+                            encoding: encodingEnum,         // 0.4.0
+                            filename: { type: 'string' },
+                            mimetype: { type: 'string' },
+                            body: { type: 'string' },
+                            url: { type: 'string', format: 'uri' },
+                            size: { type: 'number' },
+                            content_hash: contentHash       // 0.4.0
                         }
                     }
                 },
                 analysis: {
-                    type: "array",
+                    type: 'array',
                     items: {
-                        type: "object",
-                        required: ["uuid", "type"],
+                        type: 'object',
+                        required: ['uuid', 'type'],
                         properties: {
-                            uuid: { type: "string", format: "uuid" },
-                            type: { type: "string" },
-                            body: { type: "string" },
-                            url: { type: "string", format: "uri" },
-                            mimetype: { type: "string" }
+                            uuid: { type: 'string', format: 'uuid' },
+                            type: { type: 'string' },
+                            vendor: { type: 'string' },    // 0.4.0
+                            product: { type: 'string' },   // 0.4.0
+                            encoding: encodingEnum,         // 0.4.0
+                            body: { type: 'string' },
+                            url: { type: 'string', format: 'uri' },
+                            mimetype: { type: 'string' },
+                            content_hash: contentHash       // 0.4.0
                         }
                     }
                 },
                 jumps: {
-                    type: "array",
+                    type: 'array',
                     items: {
-                        type: "object",
-                        required: ["uuid"],
+                        type: 'object',
+                        required: ['uuid'],
                         properties: {
-                            uuid: { type: "string", format: "uuid" },
-                            sequence: { type: "number" },
-                            start: { type: "string", format: "date-time" },
-                            end: { type: "string", format: "date-time" },
-                            duration: { type: "number" }
+                            uuid: { type: 'string', format: 'uuid' },
+                            sequence: { type: 'number' },
+                            start: { type: 'string', format: 'date-time' },
+                            end: { type: 'string', format: 'date-time' },
+                            duration: { type: 'number' }
                         }
                     }
                 },
                 group: {
-                    type: "array",
+                    type: 'array',
                     items: {
-                        type: "object",
-                        required: ["uuid"],
+                        type: 'object',
+                        required: ['uuid'],
                         properties: {
-                            uuid: { type: "string", format: "uuid" },
-                            name: { type: "string" },
-                            parties: { type: "array", items: { type: "number" } }
+                            uuid: { type: 'string', format: 'uuid' },
+                            name: { type: 'string' },
+                            parties: { type: 'array', items: { type: 'number' } }
                         }
                     }
                 },
                 signing: {
-                    type: "array",
+                    type: 'array',
                     items: {
-                        type: "object",
-                        required: ["uuid", "type"],
+                        type: 'object',
+                        required: ['uuid', 'type'],
                         properties: {
-                            uuid: { type: "string", format: "uuid" },
-                            type: { type: "string" },
-                            body: { type: "string" },
-                            url: { type: "string", format: "uri" },
-                            mimetype: { type: "string" }
+                            uuid: { type: 'string', format: 'uuid' },
+                            type: { type: 'string' },
+                            body: { type: 'string' },
+                            url: { type: 'string', format: 'uri' },
+                            mimetype: { type: 'string' }
                         }
                     }
                 },
                 encryption: {
-                    type: "array",
+                    type: 'array',
                     items: {
-                        type: "object",
-                        required: ["uuid", "type"],
+                        type: 'object',
+                        required: ['uuid', 'type'],
                         properties: {
-                            uuid: { type: "string", format: "uuid" },
-                            type: { type: "string" },
-                            body: { type: "string" },
-                            url: { type: "string", format: "uri" },
-                            mimetype: { type: "string" }
+                            uuid: { type: 'string', format: 'uuid' },
+                            type: { type: 'string' },
+                            body: { type: 'string' },
+                            url: { type: 'string', format: 'uri' },
+                            mimetype: { type: 'string' }
                         }
                     }
                 }
@@ -272,4 +315,3 @@ export class VConValidator {
         }
     }
 }
-
