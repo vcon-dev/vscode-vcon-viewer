@@ -23,19 +23,19 @@
         "viewer",
         "ietf"
     ],
-    "publisher": "ghostofbasho",
+    "publisher": "howethomas",
     "author": {
-        "name": "ghostofbasho",
-        "email": "ghostofbasho@gmail.com"
+        "name": "howethomas",
+        "email": "thomas.howe@strolid.com"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/ghostofbasho/vscode-vcon-viewer.git"
+        "url": "https://github.com/howethomas/vscode-vcon-viewer.git"
     },
     "bugs": {
-        "url": "https://github.com/ghostofbasho/vscode-vcon-viewer/issues"
+        "url": "https://github.com/howethomas/vscode-vcon-viewer/issues"
     },
-    "homepage": "https://github.com/ghostofbasho/vscode-vcon-viewer#readme",
+    "homepage": "https://github.com/howethomas/vscode-vcon-viewer#readme",
     "activationEvents": [
         "onLanguage:json",
         "onCommand:vcon-viewer.openViewer",
