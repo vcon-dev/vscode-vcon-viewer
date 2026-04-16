@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0.0",
+  "repo": "vscode-vcon-viewer",
+  "repo_version": "0.0.1",
+  "archetype": "typescript-app",
+  "generated_at": "2026-04-16T15:15:46.768989+00:00",
+  "stats": {
+    "node_count": 8,
+    "edge_count": 0
+  },
+  "nodes": [
+    {
+      "id": "component:src/test",
+      "type": "component",
+      "name": "src/test",
+      "file": "src/test",
+      "description": "2 source files"
+    },
+    {
+      "id": "interface:npm-compile",
+      "type": "interface",
+      "name": "npm run compile",
+      "description": "tsc -p ./",
+      "file": "package.json"
+    },
+    {
+      "id": "interface:npm-lint",
+      "type": "interface",
+      "name": "npm run lint",
+      "description": "eslint src --ext ts",
+      "file": "package.json"
+    },
+    {
+      "id": "interface:npm-pretest",
+      "type": "interface",
+      "name": "npm run pretest",
+      "description": "npm run compile && npm run lint",
+      "file": "package.json"
+    },
+    {
+      "id": "interface:npm-test",
+      "type": "interface",
+      "name": "npm run test",
+      "description": "node ./out/test/runTest.js",
+      "file": "package.json"
+    },
+    {
+      "id": "interface:npm-vscode:prepublish",
+      "type": "interface",
+      "name": "npm run vscode:prepublish",
+      "description": "npm run compile",
+      "file": "package.json"
+    },
+    {
+      "id": "interface:npm-watch",
+      "type": "interface",
+      "name": "npm run watch",
+      "description": "tsc -watch -p ./",
+      "file": "package.json"
+    },
+    {
+      "id": "document:readme-md",
+      "type": "document",
+      "name": "README.md",
+      "file": "README.md"
+    }
+  ],
+  "edges": [],
+  "subsystems": []
+}
