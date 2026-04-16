@@ -1,4 +1,4 @@
-import * as Ajv from 'ajv';
+import Ajv from 'ajv';
 
 export interface VConData {
     vcon: string;
@@ -257,7 +257,7 @@ export class VConValidator {
     public getValidationErrors(data: any): string[] {
         const validate = this.ajv.compile(this.vconSchema);
         validate(data);
-        return validate.errors?.map(error => `${error.instancePath} ${error.message}`) || [];
+        return validate.errors?.map((error: any) => `${error.instancePath} ${error.message}`) || [];
     }
 
     public parseVCon(content: string): VConData | null {

@@ -1,6 +1,10 @@
 import * as assert from 'assert';
 import { VConValidator } from '../../vconValidator';
 
+// Mocha types
+declare function suite(name: string, fn: () => void): void;
+declare function test(name: string, fn: () => void): void;
+
 suite('vCon Validator Test Suite', () => {
     test('Should validate a correct vCon file', () => {
         const validator = new VConValidator();

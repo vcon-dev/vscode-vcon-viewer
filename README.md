@@ -1,8 +1,12 @@
-# vCon Viewer for VS Code
+# vCon Viewer for VS Code 🎙️
 
-A Visual Studio Code extension for viewing and interacting with IETF vCon (Voice Conversation) files.
+A powerful Visual Studio Code extension for viewing and interacting with IETF vCon (Voice Conversation) files. Transform your voice conversation data into an intuitive, interactive experience.
 
-## Features
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://marketplace.visualstudio.com/items?itemName=ghostofbasho.vcon-viewer)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![VS Code](https://img.shields.io/badge/VS%20Code-1.74+-blue.svg)](https://code.visualstudio.com/)
+
+## ✨ Features
 
 - **Automatic Detection**: Automatically detects vCon files when opened
 - **Rich Viewer**: Beautiful, organized view of vCon data with sections for:
@@ -20,7 +24,24 @@ A Visual Studio Code extension for viewing and interacting with IETF vCon (Voice
 - **File Validation**: Validates vCon files against IETF specification
 - **VSCode Integration**: Seamless integration with VS Code's theme and UI
 
-## Installation
+## 🚀 Quick Start
+
+1. **Install from VS Code Marketplace:**
+   - Open VS Code
+   - Go to Extensions (Ctrl+Shift+X / Cmd+Shift+X)
+   - Search for "vCon Viewer"
+   - Click Install
+
+2. **Or install from VSIX:**
+   - Download the latest `.vsix` file from [Releases](https://github.com/thomashowe/vscode-vcon-viewer/releases)
+   - In VS Code: Extensions → "..." → "Install from VSIX..."
+
+3. **Open a vCon file:**
+   - Open any `.json` file containing vCon data
+   - The extension will automatically detect it
+   - Use Command Palette: "Open vCon Viewer"
+
+## 🛠️ Development Installation
 
 1. Clone this repository
 2. Run `npm install` to install dependencies
@@ -56,7 +77,17 @@ Use the export buttons in the viewer header to:
 - **Export JSON**: Opens the vCon data in a new JSON editor tab
 - **Export Text**: Opens a plain text version in a new text editor tab
 
-## vCon Format Support
+## 📋 What is vCon?
+
+vCon (Voice Conversation) is an IETF standard for representing voice conversations and related metadata. It's used in:
+
+- **Contact Centers**: Call recordings, transcripts, and analytics
+- **Voice AI**: Training data and conversation analysis
+- **Compliance**: Call logging and regulatory requirements
+- **Research**: Speech analysis and conversation studies
+- **Customer Service**: Quality monitoring and training
+
+## 🏗️ vCon Format Support
 
 This extension supports the IETF vCon specification, including:
 
@@ -148,20 +179,38 @@ Here's an example of a valid vCon file:
 }
 ```
 
-## Contributing
+## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+We welcome contributions! Here's how you can help:
+
+1. **Report Issues**: Found a bug? [Open an issue](https://github.com/thomashowe/vscode-vcon-viewer/issues)
+2. **Feature Requests**: Have an idea? [Suggest it](https://github.com/thomashowe/vscode-vcon-viewer/issues)
+3. **Code Contributions**: 
+   - Fork the repository
+   - Create a feature branch
+   - Make your changes
+   - Add tests if applicable
+   - Submit a pull request
+
+## 📊 Use Cases
+
+- **Contact Center Managers**: Review call quality and agent performance
+- **Data Scientists**: Analyze conversation patterns and sentiment
+- **Compliance Officers**: Audit call recordings and transcripts
+- **Researchers**: Study communication patterns and linguistics
+- **Developers**: Build voice AI applications with vCon data
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Acknowledgments
+## 🌐 IETF vCon Standard
 
-- IETF vCon Working Group for the specification
-- VS Code Extension API documentation
+This extension implements the [IETF vCon specification](https://datatracker.ietf.org/doc/draft-ietf-atag-vcon/), which defines a standardized format for representing voice conversations. The specification is currently in development and aims to provide a common format for voice conversation data across different platforms and systems.
+
+## 🙏 Acknowledgments
+
+- [IETF vCon Working Group](https://datatracker.ietf.org/wg/atag/) for the specification
+- [VS Code Extension API](https://code.visualstudio.com/api) documentation
 - The open source community for inspiration and tools
+- Contributors and users who provide feedback and suggestions

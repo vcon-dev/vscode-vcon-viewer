@@ -14,7 +14,7 @@ export class VConViewerProvider implements vscode.WebviewViewProvider {
 
     public resolveWebviewView(
         webviewView: vscode.WebviewView,
-        context: vscode.WebviewViewResolveContext,
+        _context: vscode.WebviewViewResolveContext,
         _token: vscode.CancellationToken,
     ) {
         this._view = webviewView;
@@ -288,7 +288,7 @@ export class VConViewerProvider implements vscode.WebviewViewProvider {
         vscode.env.openExternal(vscode.Uri.parse(url));
     }
 
-    private _downloadAttachment(attachment: any) {
+    private _downloadAttachment(attachment: { filename?: string; uuid: string }) {
         // This would trigger a download of the attachment
         vscode.window.showInformationMessage(`Downloading ${attachment.filename || attachment.uuid}`);
     }
