@@ -1,5 +1,5 @@
 {
-    "name": "vcon-viewer",
+    "name": "vcon-file-viewer",
     "displayName": "vCon Viewer",
     "description": "View and interact with IETF vCon files in VSCode - vCon 0.4.0 spec compliant",
     "version": "0.2.0",
