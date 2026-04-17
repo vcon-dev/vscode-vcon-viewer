@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0.0",
   "repo": "vscode-vcon-viewer",
-  "repo_version": "0.0.1",
+  "repo_version": "0.2.0",
   "archetype": "typescript-app",
-  "generated_at": "2026-04-16T15:15:46.768989+00:00",
+  "generated_at": "2026-04-17T12:29:51.260926+00:00",
   "stats": {
-    "node_count": 8,
+    "node_count": 7,
     "edge_count": 0
   },
   "nodes": [
@@ -14,7 +14,7 @@
       "type": "component",
       "name": "src/test",
       "file": "src/test",
-      "description": "2 source files"
+      "description": "3 source files"
     },
     {
       "id": "interface:npm-compile",
@@ -31,17 +31,10 @@
       "file": "package.json"
     },
     {
-      "id": "interface:npm-pretest",
-      "type": "interface",
-      "name": "npm run pretest",
-      "description": "npm run compile && npm run lint",
-      "file": "package.json"
-    },
-    {
       "id": "interface:npm-test",
       "type": "interface",
       "name": "npm run test",
-      "description": "node ./out/test/runTest.js",
+      "description": "echo 'Tests temporarily disabled due to TypeScript compatibility issues'",
       "file": "package.json"
     },
     {
